@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/holepunchto/electron-forge-maker-appimage.git"
   },
-  "author": "Prince527",
+  "author": "Holepunch",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/holepunchto/electron-forge-maker-appimage/issues"
