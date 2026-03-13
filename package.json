@@ -1,6 +1,6 @@
 {
-  "name": "@forkprince/electron-forge-maker-appimage",
-  "version": "1.0.11",
+  "name": "@holepunchto/electron-forge-maker-appimage",
+  "version": "0.0.0",
   "description": "An electron-forge builder for AppImage.",
   "main": "dist/index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ForkPrince/electron-forge-maker-appimage.git"
+    "url": "git+https://github.com/holepunchto/electron-forge-maker-appimage.git"
   },
   "author": "Prince527",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ForkPrince/electron-forge-maker-appimage/issues"
+    "url": "https://github.com/holepunchto/electron-forge-maker-appimage/issues"
   },
-  "homepage": "https://github.com/ForkPrince/electron-forge-maker-appimage#readme",
+  "homepage": "https://github.com/holepunchto/electron-forge-maker-appimage#readme",
   "dependencies": {
     "@electron-forge/maker-base": "7.5.0",
     "@electron-forge/shared-types": "7.5.0",
