@@ -35,23 +35,24 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
 
     const iconPath = path.join(path.dirname(require.resolve("app-builder-lib")), "../templates/icons/electron-linux");
 
-    let config = this.config
-
-    if (!config?.icons?.length > 0) {
-      config: AppImageForgeConfig = {
-        icons: [
-          { file: `${iconPath}/16x16.png`, size: 16 },
-          { file: `${iconPath}/32x32.png`, size: 32 },
-          { file: `${iconPath}/48x48.png`, size: 48 },
-          { file: `${iconPath}/64x64.png`, size: 64 },
-          { file: `${iconPath}/128x128.png`, size: 128 },
-          { file: `${iconPath}/256x256.png`, size: 256 }
-        ]
-      }
-    }
+    let forgeAppImageConfig: AppImageForgeConfig = {};
 
     const maker = forgeConfig.makers.find(maker => isIForgeResolvableMaker(maker) && maker.name === packageInfo.name);
-    if (maker !== undefined && isIForgeResolvableMaker(maker)) config = { ...config, ...maker.config };
+    if (maker !== undefined && isIForgeResolvableMaker(maker)) {
+      forgeAppImageConfig = { ...forgeAppImageConfig, ...(maker.config as AppImageForgeConfig) };
+    }
+
+    // Apply default icons if missing
+    if (!forgeAppImageConfig.icons?.length) {
+      forgeAppImageConfig.icons = [
+        { file: `${iconPath}/16x16.png`, size: 16 },
+        { file: `${iconPath}/32x32.png`, size: 32 },
+        { file: `${iconPath}/48x48.png`, size: 48 },
+        { file: `${iconPath}/64x64.png`, size: 64 },
+        { file: `${iconPath}/128x128.png`, size: 128 },
+        { file: `${iconPath}/256x256.png`, size: 256 }
+      ];
+    }
 
     const mimeTypes = (forgeConfig.packagerConfig?.protocols ?? []).flatMap((p) => p.schemes.map((s) => "x-scheme-handler/" + s.toLowerCase()));
 
@@ -94,7 +95,7 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
         productFilename: appName,
         desktopEntry: desktop,
         executableName: executable,
-        icons: config.icons,
+        icons: forgeAppImageConfig.icons,
         fileAssociations: []
       })
     ]);
