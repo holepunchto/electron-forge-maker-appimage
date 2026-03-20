@@ -1,6 +1,6 @@
 {
   "name": "@holepunchto/electron-forge-maker-appimage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An electron-forge builder for AppImage.",
   "main": "dist/index.js",
   "scripts": {
