@@ -35,15 +35,19 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
 
     const iconPath = path.join(path.dirname(require.resolve("app-builder-lib")), "../templates/icons/electron-linux");
 
-    let config: AppImageForgeConfig = {
-      icons: [
-        { file: `${iconPath}/16x16.png`, size: 16 },
-        { file: `${iconPath}/32x32.png`, size: 32 },
-        { file: `${iconPath}/48x48.png`, size: 48 },
-        { file: `${iconPath}/64x64.png`, size: 64 },
-        { file: `${iconPath}/128x128.png`, size: 128 },
-        { file: `${iconPath}/256x256.png`, size: 256 }
-      ]
+    let config = this.config
+
+    if (!config?.icons?.length > 0) {
+      config: AppImageForgeConfig = {
+        icons: [
+          { file: `${iconPath}/16x16.png`, size: 16 },
+          { file: `${iconPath}/32x32.png`, size: 32 },
+          { file: `${iconPath}/48x48.png`, size: 48 },
+          { file: `${iconPath}/64x64.png`, size: 64 },
+          { file: `${iconPath}/128x128.png`, size: 128 },
+          { file: `${iconPath}/256x256.png`, size: 256 }
+        ]
+      }
     }
 
     const maker = forgeConfig.makers.find(maker => isIForgeResolvableMaker(maker) && maker.name === packageInfo.name);
