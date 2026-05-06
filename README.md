@@ -11,7 +11,7 @@ This project is based on several existing projects:
 ## Usage
 
 ```bash
-npm install @holepunchto/electron-forge-maker-appimage --save-dev
+npm install @pear-/electron-forge-maker-appimage --save-dev
 ```
 
 ## forge.config.js
@@ -19,7 +19,7 @@ npm install @holepunchto/electron-forge-maker-appimage --save-dev
 ```js
 makers: [
   {
-    name: '@holepunchto/electron-forge-maker-appimage',
+    name: '@pear-/electron-forge-maker-appimage',
     platforms: ['linux'],
     config: {
       icons: [
