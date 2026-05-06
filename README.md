@@ -17,19 +17,34 @@ npm install @holepunchto/electron-forge-maker-appimage --save-dev
 ## forge.config.js
 
 ```js
-makers: [
+makes: [
   {
-    name: "@holepunchto/electron-forge-maker-appimage",
-    platforms: ["linux"],
+    name: '@holepunchto/electron-forge-maker-appimage',
+    platforms: ['linux'],
     config: {
-      productName: "Re:Lunatic Player",
       icons: [
         {
-          file: "./src/img/logo.png",
-          size: 256
-        }
-      ]
-    }
-  }
-];
+          file: 'build-assets/linux/assets/Keet/Keet-16x16.png',
+          size: 16,
+        },
+        {
+          file: 'build-assets/linux/assets/Keet/Keet-32x32.png',
+          size: 32,
+        },
+        {
+          file: 'build-assets/linux/assets/Keet/Keet-64x64.png',
+          size: 64,
+        },
+        {
+          file: 'build-assets/linux/assets/Keet/Keet-128x128.png',
+          size: 128,
+        },
+        {
+          file: 'build-assets/linux/assets/Keet/Keet-256x256.png',
+          size: 256,
+        },
+      ],
+    },
+  },
+]
 ```
