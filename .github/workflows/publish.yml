@@ -16,4 +16,5 @@ jobs:
       - uses: holepunchto/actions/node-base@v1
         with:
           allow-git: true
+      - run: npm run build
       - uses: holepunchto/actions/publish@v1
