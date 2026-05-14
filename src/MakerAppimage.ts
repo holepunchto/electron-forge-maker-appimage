@@ -1,7 +1,7 @@
 import { ForgePlatform, IForgeResolvableMaker, IForgeMaker } from "@electron-forge/shared-types";
 import MakerBase, { MakerOptions } from "@electron-forge/maker-base";
 import * as appBuilder from "app-builder-lib/out/util/appBuilder";
-import { mkdirSync, existsSync, rmdirSync } from "fs";
+import { mkdirSync, existsSync, rmdirSync, readFileSync, writeFileSync, unlinkSync } from "fs";
 import { MakerAppImageConfig } from "./Config";
 import packageInfo from "../package.json";
 import path from "path";
@@ -79,6 +79,11 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
     if (existsSync(stageDir)) rmdirSync(stageDir);
     mkdirSync(stageDir, { recursive: true });
 
+    let appRun = readFileSync(path.join(__dirname, '..', '..', 'AppRun'), 'utf8');
+    appRun = appRun.replace(/{{\.ExecutableName}}/g, appName);
+    const appRunPath = path.join(dir, 'AppRun');
+    writeFileSync(appRunPath, appRun, { mode: 0o755 });
+
     await appBuilder.executeAppBuilderAsJson([
       "appimage",
       "--stage", // /home/build/Software/monorepo/packages/electron/out/make/__appImage-x64
@@ -99,6 +104,8 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
         fileAssociations: []
       })
     ]);
+
+    unlinkSync(appRunPath);
 
     return [appPath];
   }
