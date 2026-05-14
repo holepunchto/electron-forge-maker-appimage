@@ -1,6 +1,6 @@
 {
   "name": "pear-electron-forge-maker-appimage",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "An electron-forge builder for AppImage.",
   "main": "dist/index.js",
   "scripts": {
