@@ -62,7 +62,7 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
       Terminal: "false",
       Type: "Application",
       Icon: executable,
-      StartupWMClass: packageJSON.productName as string,
+      StartupWMClass: appName.toLowerCase(),
       "X-AppImage-Version": packageJSON.version,
       Comment: packageJSON.description,
       Categories: "Utility",
