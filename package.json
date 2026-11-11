@@ -28,7 +28,8 @@
   "dependencies": {
     "@electron-forge/maker-base": "^8.0.1",
     "@electron-forge/shared-types": "^8.0.1",
-    "app-builder-lib": "~25.1.8"
+    "app-builder-lib": "~26.18.0",
+    "builder-util": "^26.16.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

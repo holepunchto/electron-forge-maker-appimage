@@ -56,6 +56,17 @@ makers: [
 ]
 ```
 
+## Config
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `icons` | app-builder-lib's stock Electron icons | Icons to embed, as `{ file, size }`. All files must share one extension. |
+| `compression` | mksquashfs default (gzip) | Squashfs compression: `gzip`, `zstd` or `xz`. `xz` gives the smallest images but only works with the default FUSE2 runtime. |
+| `appimageToolVersion` | unset (FUSE2 runtime) | Build against a static AppImage runtime instead, e.g. `"1.0.3"`. Removes the end user's need for libfuse2. |
+
+The AppImage is launched through the `AppRun` script vendored in this repo, which replaces the
+one app-builder-lib generates.
+
 Or instantiated as a class:
 
 ```js
