@@ -1,17 +1,18 @@
 {
 	"compilerOptions": {
 		"module": "nodenext",
-		"target": "es6",
+		"moduleResolution": "nodenext",
+		"target": "es2022",
 		"outDir": "dist",
 		"lib": [
-			"es6",
-			"dom",
-			"es7"
+			"es2022",
+			"dom"
 		],
 		"sourceMap": true,
 		"rootDir": ".",
 		"experimentalDecorators": true,
 		"strict": true,
+		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"declaration": true,
 		"resolveJsonModule": true

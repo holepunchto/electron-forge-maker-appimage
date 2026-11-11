@@ -1,18 +1,17 @@
-import { ForgePlatform, IForgeResolvableMaker, IForgeMaker } from "@electron-forge/shared-types";
+import { ForgePlatform } from "@electron-forge/shared-types";
 import MakerBase, { MakerOptions } from "@electron-forge/maker-base";
-import * as appBuilder from "app-builder-lib/out/util/appBuilder";
-import { mkdirSync, existsSync, rmdirSync, readFileSync, writeFileSync, unlinkSync } from "fs";
-import { MakerAppImageConfig } from "./Config";
-import packageInfo from "../package.json";
+import { executeAppBuilderAsJson } from "app-builder-lib/out/util/appBuilder.js";
+import { mkdirSync, existsSync, readFileSync, writeFileSync, rmSync } from "fs";
+import { createRequire } from "node:module";
 import path from "path";
 
-interface AppImageForgeConfig {
+const require = createRequire(import.meta.url);
+
+export interface AppImageForgeConfig {
   icons?: { file: string; size: number }[];
 }
 
-const isIForgeResolvableMaker = (maker: IForgeResolvableMaker | IForgeMaker): maker is IForgeResolvableMaker => maker.hasOwnProperty("name");
-
-export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
+export default class MakerAppImage extends MakerBase<AppImageForgeConfig> {
   name = "appImage";
 
   defaultPlatforms: ForgePlatform[] = ["linux"];
@@ -35,16 +34,11 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
 
     const iconPath = path.join(path.dirname(require.resolve("app-builder-lib")), "../templates/icons/electron-linux");
 
-    let forgeAppImageConfig: AppImageForgeConfig = {};
-
-    const maker = forgeConfig.makers.find(maker => isIForgeResolvableMaker(maker) && maker.name === packageInfo.name);
-    if (maker !== undefined && isIForgeResolvableMaker(maker)) {
-      forgeAppImageConfig = { ...forgeAppImageConfig, ...(maker.config as AppImageForgeConfig) };
-    }
-
-    // Apply default icons if missing
-    if (!forgeAppImageConfig.icons?.length) {
-      forgeAppImageConfig.icons = [
+    // Forge resolves the maker config into `this.config` right before `make()`, both for
+    // string-name makers and for makers instantiated as a class.
+    const icons = this.config?.icons?.length
+      ? this.config.icons
+      : [
         { file: `${iconPath}/16x16.png`, size: 16 },
         { file: `${iconPath}/32x32.png`, size: 32 },
         { file: `${iconPath}/48x48.png`, size: 48 },
@@ -52,7 +46,6 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
         { file: `${iconPath}/128x128.png`, size: 128 },
         { file: `${iconPath}/256x256.png`, size: 256 }
       ];
-    }
 
     const mimeTypes = (forgeConfig.packagerConfig?.protocols ?? []).flatMap((p) => p.schemes.map((s) => "x-scheme-handler/" + s.toLowerCase()));
 
@@ -76,36 +69,37 @@ export default class MakerAppImage extends MakerBase<MakerAppImageConfig> {
     if (!existsSync(makeDir)) mkdirSync(makeDir, { recursive: true });
 
     const stageDir = path.join(makeDir, `__appImage-${targetArch}`);
-    if (existsSync(stageDir)) rmdirSync(stageDir);
-    mkdirSync(stageDir, { recursive: true });
+    await this.ensureDirectory(stageDir);
 
-    let appRun = readFileSync(path.join(__dirname, '..', '..', 'AppRun'), 'utf8');
+    let appRun = readFileSync(path.join(import.meta.dirname, '..', '..', 'AppRun'), 'utf8');
     appRun = appRun.replace(/{{\.ExecutableName}}/g, appName);
     const appRunPath = path.join(dir, 'AppRun');
     writeFileSync(appRunPath, appRun, { mode: 0o755 });
 
-    await appBuilder.executeAppBuilderAsJson([
-      "appimage",
-      "--stage", // /home/build/Software/monorepo/packages/electron/out/make/__appImage-x64
-      stageDir,
-      "--arch", // x64
-      targetArch,
-      "--output", // /home/build/Software/monorepo/packages/electron/out/make/name-2.0.6.AppImage
-      appPath,
-      "--app", // /home/build/Software/monorepo/packages/electron/out/name-linux-x64
-      dir,
-      "--configuration",
-      JSON.stringify({
-        productName: appName,
-        productFilename: appName,
-        desktopEntry: desktop,
-        executableName: executable,
-        icons: forgeAppImageConfig.icons,
-        fileAssociations: []
-      })
-    ]);
-
-    unlinkSync(appRunPath);
+    try {
+      await executeAppBuilderAsJson([
+        "appimage",
+        "--stage", // /home/build/Software/monorepo/packages/electron/out/make/__appImage-x64
+        stageDir,
+        "--arch", // x64
+        targetArch,
+        "--output", // /home/build/Software/monorepo/packages/electron/out/make/name-2.0.6.AppImage
+        appPath,
+        "--app", // /home/build/Software/monorepo/packages/electron/out/name-linux-x64
+        dir,
+        "--configuration",
+        JSON.stringify({
+          productName: appName,
+          productFilename: appName,
+          desktopEntry: desktop,
+          executableName: executable,
+          icons,
+          fileAssociations: []
+        })
+      ]);
+    } finally {
+      rmSync(appRunPath, { force: true });
+    }
 
     return [appPath];
   }
