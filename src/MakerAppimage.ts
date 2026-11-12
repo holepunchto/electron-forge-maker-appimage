@@ -1,8 +1,7 @@
 import { ForgePlatform } from "@electron-forge/shared-types";
 import MakerBase, { MakerOptions } from "@electron-forge/maker-base";
-import { buildLegacyFuse2AppImage, buildStaticRuntimeAppImage } from "app-builder-lib/out/targets/appimage/appImageUtil.js";
+import { buildLegacyFuse2AppImage } from "app-builder-lib/out/targets/appimage/appImageUtil.js";
 import { archFromString } from "builder-util";
-import type { ToolsetConfig } from "app-builder-lib/out/configuration.js";
 import { mkdirSync, existsSync, readFileSync, writeFileSync, rmSync } from "fs";
 import { createRequire } from "node:module";
 import path from "path";
@@ -11,8 +10,6 @@ const require = createRequire(import.meta.url);
 
 export interface AppImageForgeConfig {
   icons?: { file: string; size: number }[];
-  compression?: "gzip" | "zstd" | "xz";
-  appimageToolVersion?: ToolsetConfig["appimage"];
 }
 
 export default class MakerAppImage extends MakerBase<AppImageForgeConfig> {
@@ -91,21 +88,12 @@ export default class MakerAppImage extends MakerBase<AppImageForgeConfig> {
         executableName: executable,
         desktopEntry: desktop,
         icons,
-        compression: this.config?.compression,
         fileAssociations: []
       }
     };
 
-    if (this.config?.appimageToolVersion && this.config.compression === "xz") {
-      throw new Error(`${this.name}: compression "xz" is only supported by the default FUSE2 runtime, not by the static runtime selected via appimageToolVersion. Use "gzip" or "zstd".`);
-    }
-
     try {
-      if (this.config?.appimageToolVersion) {
-        await buildStaticRuntimeAppImage(this.config.appimageToolVersion, builderOptions);
-      } else {
-        await buildLegacyFuse2AppImage(builderOptions);
-      }
+      await buildLegacyFuse2AppImage(builderOptions);
     } finally {
       rmSync(appRunPath, { force: true });
       rmSync(stageDir, { recursive: true, force: true });
