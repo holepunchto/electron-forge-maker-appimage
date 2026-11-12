@@ -1,9 +1,12 @@
 {
   "name": "pear-electron-forge-maker-appimage",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "An electron-forge builder for AppImage.",
   "type": "module",
-  "files": ["dist", "AppRun"],
+  "files": [
+    "dist",
+    "AppRun"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
