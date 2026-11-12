@@ -1,1 +1,1 @@
-export { default } from "./src/MakerAppimage"
+export { default } from "./src/MakerAppimage.js"

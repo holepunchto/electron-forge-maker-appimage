@@ -8,6 +8,13 @@ This project is based on several existing projects:
 - [@pengx17/electron-forge-maker-appimage](https://www.npmjs.com/package/@pengx17/electron-forge-maker-appimage)
 - [@forkprince/electron-forge-maker-appimage](https://www.npmjs.com/package/@forkprince/electron-forge-maker-appimage)
 
+## Requirements
+
+- Electron Forge 8 (this package is ESM-only, as Forge 8 loads makers with `import()`)
+- Node.js >= 22.13.0
+
+For Electron Forge 7, use the 2.x releases of this package.
+
 ## Usage
 
 ```bash
@@ -46,5 +53,29 @@ makers: [
       ],
     },
   },
+]
+```
+
+## Config
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `icons` | app-builder-lib's stock Electron icons | Icons to embed, as `{ file, size }`. All files must share one extension. |
+
+The AppImage is launched through the `AppRun` script vendored in this repo, which replaces the
+one app-builder-lib generates.
+
+Or instantiated as a class:
+
+```js
+import MakerAppImage from "pear-electron-forge-maker-appimage"
+
+makers: [
+  new MakerAppImage({
+    icons: [
+      { file: "build-assets/linux/assets/Keet/Keet-16x16.png", size: 16 },
+      // ...
+    ]
+  }, ["linux"])
 ]
 ```
